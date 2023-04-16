@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.watson.mapper.StoreMapper">
+    <resultMap id="BaseResultMap" type="com.watson.entity.StoreEntity">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="ownerId" column="ownerId" jdbcType="BIGINT"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="CHAR"/>
+    </resultMap>
+    <select id="getAllStore" resultType="com.watson.entity.StoreEntity">
+        SELECT s.*, fav.storeId
+        FROM eoezora.store s LEFT JOIN eoezora.user_store_favorite fav ON s.id = fav.storeId AND fav.userId = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.watson.mapper.CouponMapper">
+
+    <resultMap id="BaseResultMap" type="com.watson.entity.CouponEntity">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="storeId" column="storeId" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="CHAR"/>
+        <result property="rule" column="rule" jdbcType="VARCHAR"/>
+        <result property="discount" column="discount" jdbcType="INTEGER"/>
+        <result property="couponCondition" column="coupon_condition" jdbcType="INTEGER"/>
+        <result property="count" column="count" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="getCouponWithUser" resultType="com.watson.entity.CouponEntity">
+        select c.*, uc.date, s.title storeName, s.id
+        from eoezora.coupon c,
+             eoezora.user_coupon uc,
+             eoezora.store s
+        where c.id = uc.couponId
+          and c.storeId = s.id
+          and uc.status = 0
+          <![CDATA[
+          and uc.date >= LOCALTIME()
+          ]]>
+          and uc.userId = #{userId}
+        order by c.type desc;
+    </select>
+</mapper>

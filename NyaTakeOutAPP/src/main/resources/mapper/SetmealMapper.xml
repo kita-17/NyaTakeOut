@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.watson.mapper.SetmealMapper">
+    <resultMap id="BaseResultMap" type="com.watson.dto.SetmealDTO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="key" column="id" jdbcType="VARCHAR"/>
+        <result property="storeId" column="store_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="sale" column="sale" jdbcType="INTEGER"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="categoryName" column="categoryName" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <collection property="flavor" resultMap="SetmealFlavorList"/>
+    </resultMap>
+    <resultMap id="SetmealFlavorList" type="com.watson.entity.SetmealDishEntity">
+        <result property="label" column="dish_name" jdbcType="VARCHAR"/>
+        <result property="value" column="dish_value" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <select id="getSetmealList" resultMap="BaseResultMap">
+        select s.*, d.id dish_value,d.name dish_name, c.name categoryName from eoezora.category c, (select * from
+        setmeal where store_id=#{storeId}) s left join dish d on d.id in (select sd.dish_id from
+        setmeal_dish sd where sd.setmeal_id = s.id) where c.id = s.category_id
+        <if test="name != null">
+            and s.name like concat('%',#{name},'%')
+        </if>
+        <if test="showHide == false">
+            and s.status = 1
+        </if>
+    </select>
+</mapper>
